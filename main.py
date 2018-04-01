@@ -27,6 +27,7 @@ if __name__ == '__main__':
     #compute query result and output result
     output_file = open(args.output, 'w')
     new_line = False
+    record = dict()
     with open(args.query, 'r') as query_file:
         for line in query_file:
             if new_line:
@@ -36,17 +37,26 @@ if __name__ == '__main__':
             if line.find('and') > -1:
                 query_content = line.split(' and ')
                 result_set  = set()
-                flag = True
-                for content in query_content:
-                    temp_set = set()
+                content = query_content[0]
+                temp_set = set()
+                if content in record:
+                    temp_set = record[content]
+                else:
                     for row in source_data:
                         if row[1].find(content) > -1:
                             temp_set.add(int(row[0]))
-                    if flag:
-                        flag = False
-                        result_set = temp_set
-                    else :
-                        result_set = result_set & temp_set
+                    record[content] = temp_set
+                result_set = temp_set
+                for content in query_content[1:len(query_content)]:
+                    temp_set = set()
+                    if content in record:
+                        temp_set = record[content]
+                    else:
+                        for row in source_data:
+                            if row[1].find(content) > -1:
+                                temp_set.add(int(row[0]))
+                        record[content] = temp_set
+                    result_set = result_set & temp_set
                 if len(result_set) == 0:
                     output_file.write('0')
                 else:
@@ -64,17 +74,26 @@ if __name__ == '__main__':
             if line.find('or') > -1:
                 query_content = line.split(' or ')
                 result_set  = set()
-                flag = True
-                for content in query_content:
-                    temp_set = set()
+                content = query_content[0]
+                temp_set = set()
+                if content in record:
+                    temp_set = record[content]
+                else:
                     for row in source_data:
                         if row[1].find(content) > -1:
                             temp_set.add(int(row[0]))
-                    if flag:
-                        flag = False
-                        result_set = temp_set
-                    else :
-                        result_set = result_set | temp_set
+                    record[content] = temp_set
+                result_set = temp_set
+                for content in query_content[1:len(query_content)]:
+                    temp_set = set()
+                    if content in record:
+                        temp_set = record[content]
+                    else:
+                        for row in source_data:
+                            if row[1].find(content) > -1:
+                                temp_set.add(int(row[0]))
+                        record[content] = temp_set
+                    result_set = result_set | temp_set
                 if len(result_set) == 0:
                     output_file.write('0')
                 else:
@@ -91,17 +110,26 @@ if __name__ == '__main__':
             if line.find('not') > -1:
                 query_content = line.split(' not ')
                 result_set  = set()
-                flag = True
-                for content in query_content:
-                    temp_set = set()
+                content = query_content[0]
+                temp_set = set()
+                if content in record:
+                    temp_set = record[content]
+                else:
                     for row in source_data:
                         if row[1].find(content) > -1:
                             temp_set.add(int(row[0]))
-                    if flag:
-                        flag = False
-                        result_set = temp_set
-                    else :
-                        result_set = result_set - temp_set
+                    record[content] = temp_set
+                result_set = temp_set
+                for content in query_content[1:len(query_content)]:
+                    temp_set = set()
+                    if content in record:
+                        temp_set = record[content]
+                    else:
+                        for row in source_data:
+                            if row[1].find(content) > -1:
+                                temp_set.add(int(row[0]))
+                        record[content] = temp_set
+                    result_set = result_set - temp_set
                 if len(result_set) == 0:
                     output_file.write('0')
                 else:
